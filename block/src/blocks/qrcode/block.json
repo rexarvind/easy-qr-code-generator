@@ -1,0 +1,270 @@
+{
+    "name": "htqrcode/qrcode",
+    "category": "common",
+    "attributes": {
+        "title": {
+            "type": "string",
+            "default": ""
+        },
+        "html_tag": {
+            "type": "string",
+            "default": ""
+        },
+        "category": {
+            "type": "string",
+            "default": "text"
+        },
+        "alignment": {
+            "type": "string",
+            "default": ""
+        },
+        "qrDemoStyle": {
+            "type": "string",
+            "default": ""
+        },
+        "text": {
+            "type": "string",
+            "default": ""
+        },
+        "url":{
+            "type": "string",
+            "default": ""
+        },
+        "mobile":{
+            "type": "string",
+            "default": ""
+        },
+        "message":{
+            "type": "string",
+            "default": ""
+        },
+        "email":{
+            "type": "string",
+            "default": ""
+        },
+        "skype":{
+            "type": "string",
+            "default": ""
+        },
+        "latitude":{
+            "type": "string",
+            "default": ""
+        },
+        "longitude":{
+            "type": "string",
+            "default": ""
+        },
+        "query":{
+            "type": "string",
+            "default": ""
+        },
+        "ssid":{
+            "type": "string",
+            "default": ""
+        },
+        "password":{
+            "type": "string",
+            "default": ""
+        },
+        "networdType":{
+            "type": "string",
+            "default": ""
+        },
+        "name":{
+            "type": "string",
+            "default": ""
+        },
+        "company":{
+            "type": "string",
+            "default": ""
+        },
+        "contactTitle":{
+            "type": "string",
+            "default": ""
+        },
+        "phone":{
+            "type": "string",
+            "default": ""
+        },
+        "address":{
+            "type": "string",
+            "default": ""
+        },
+        "note":{
+            "type": "string",
+            "default": ""
+        },
+        "encoding":{
+            "type": "string",
+            "default": ""
+        },
+        "qrCodeLogo":{
+            "type": "object",
+            "default": {
+            }
+        },
+        "qrCodeBackground":{
+            "type": "object",
+            "default": {
+            }
+        },
+        "qrCodeImage":{
+            "type": "object",
+            "default": {
+            }
+        },"qrCodeEventTitle":{
+            "type": "string",
+            "default": ""
+
+        },"qrCodeEventStartDate":{
+            "type": "string",
+            "default": ""
+
+        },"qrCodeEventEndDate":{
+            "type": "string",
+            "default": ""
+
+        },"qrCodeEventLocation":{
+            "type": "string",
+            "default": ""
+            
+        },"qrCodeEventDescription":{
+            "type": "string",
+            "default": ""
+        },
+        "qrcode": {
+            "type": "string",
+            "default": "QR Code Empty"
+        },
+        "size": {
+            "type": "string",
+            "default": 300
+        },
+        "dot_scale": {
+            "type": "string",
+            "default": "1"
+        },
+        "qr_level": {
+            "type": "string",
+            "default": "L"
+        },
+        "logo": {
+            "type": "string",
+            "default": ""
+        },
+
+        "logo_width": {
+            "type": "string",
+            "default": 80
+        },
+        "logo_height": {
+            "type": "string",
+            "default": 80
+        },
+        "logo_bg_color": {
+            "type": "string",
+            "default": ""
+        },
+        "qr_bg_image": {
+            "type": "string",
+            "default": ""
+        },
+        "logo_bg_transparent": {
+            "type": "string",
+            "default": "true"
+        },
+        "qr_bg_opacity": {
+            "type": "string",
+            "default": "0.5"
+        },
+        "qr_bg_autocolor": {
+            "type": "string",
+            "default": "false"
+        },
+        "colordark": {
+            "type": "string",
+            "default": "#000000"
+        },
+        "colorlight": {
+            "type": "string",
+            "default": "#ffffff"
+        },
+        "po": {
+            "type": "string",
+            "default": ""
+        },
+        "pi": {
+            "type": "string",
+            "default": ""
+        },
+        "po_tl": {
+            "type": "string",
+            "default": ""
+        },
+        "pi_tl": {
+            "type": "string",
+            "default": ""
+        },
+        "po_tr": {
+            "type": "string",
+            "default": ""
+        },
+        "pi_tr": {
+            "type": "string",
+            "default": ""
+        },
+        "po_bl": {
+            "type": "string",
+            "default": ""
+        },
+        "pi_bl": {
+            "type": "string",
+            "default": ""
+        },
+        "ai": {
+            "type": "string",
+            "default": ""
+        },
+        "ao": {
+            "type": "string",
+            "default": ""
+        },
+        "timing": {
+            "type": "string",
+            "default": ""
+        },
+        "timing_h": {
+            "type": "string",
+            "default": ""
+        },
+        "timing_v": {
+            "type": "string",
+            "default": ""
+        },
+        "quietzone": {
+            "type": "string",
+            "default": "0"
+        },
+        "quietzonecolor": {
+            "type": "string",
+            "default": "#00CED1"
+        },
+        "print": {
+            "type": "boolean",
+            "default": true
+        },
+        "print_btn_txt": {
+            "type": "string",
+            "default": "Print QR Code"
+        },
+        "download": {
+            "type": "boolean",
+            "default": true
+        },
+        "download_btn_txt": {
+            "type": "string",
+            "default": "Download"
+        }
+       
+    }
+}
