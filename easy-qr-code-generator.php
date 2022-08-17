@@ -17,6 +17,7 @@ class EasyQRCodeGenerator
 {
     protected $plugin_name;
     protected $plugin_slug;
+    protected $plugin_file;
     protected $plugin_version;
     protected $plugin_dir_url;
 
@@ -67,10 +68,8 @@ class EasyQRCodeGenerator
 
     function enqueue_public_assets()
     {
-        wp_enqueue_style($this->plugin_slug . '-main-style', $this->plugin_dir_url . 'public/css/style.css', array(), filemtime(plugin_dir_path(__FILE__) . 'public/css/style.css'));
-        wp_enqueue_script($this->plugin_slug . '-qr-script', $this->plugin_dir_url . 'public/js/easy.qrcode.min.js', array('jquery'), '4.4.12', true);
-        wp_enqueue_script($this->plugin_slug . '-generator-script', $this->plugin_dir_url . 'public/js/generator.js', array('wp-block-editor', 'wp-blocks', 'wp-components', 'wp-compose', 'wp-data', 'wp-element', 'wp-i18n', 'wp-polyfill'), '0.0.1', true);
-        wp_enqueue_script($this->plugin_slug . '-main-script', $this->plugin_dir_url . 'public/js/main.js', array('jquery'), filemtime(plugin_dir_path(__FILE__) . 'public/js/main.js'), true);
+        wp_register_script($this->plugin_slug . '-qr-script', $this->plugin_dir_url . 'public/js/easy.qrcode.min.js', array(), '4.4.12', false);
+        wp_register_script($this->plugin_slug . '-main-script', $this->plugin_dir_url . 'public/js/main.js', array(), filemtime(plugin_dir_path(__FILE__) . 'public/js/main.js'), true);
     }
 
     function easy_qrcode_shortcode($atts = array(), $content = null, $tag = '')
@@ -143,24 +142,24 @@ class EasyQRCodeGenerator
         // if $download_btn_text variable is empty, then print "Download" text
         if (empty($vars['download-btn-text'])) $vars['download-btn-text'] = 'Download';
 
-        $data = array();
+        wp_enqueue_script($this->plugin_slug . '-qr-script');
+        wp_enqueue_script($this->plugin_slug . '-main-script');
         ob_start();
 ?>
-        <div class="ht_qrcode" style="text-align:<?php echo esc_attr($vars['alignment']); ?>">
-            <div id="print-<?php echo esc_attr($qr_id); ?>" class="ht_qrcode-<?php echo esc_attr($qr_id); ?>"></div>
-            <div class="ht_qrcode_Button">
+        <div class="easy-qrcode" style="text-align:<?php echo esc_attr($vars['alignment']); ?>">
+            <div id="easy-qrcode-id-<?php echo esc_attr($qr_id); ?>" class="easy-qrcode-<?php echo esc_attr($qr_id); ?> east-qrcode-box east-qrcode-<?php echo esc_attr($qr_id); ?>"></div>
+            <div id="easy-qrcode-btns-<?php echo esc_attr($qr_id); ?>" class="easy-qrcode-btns">
                 <?php if (esc_attr($vars['print'] == 'true')) { ?>
-                    <a class="htqr-btn htqr-btn-print" href="javascript:printDiv('print-<?php echo esc_attr($qr_id); ?>')"><?php echo esc_html__($vars['print-btn-text'], 'easy-qrcode') ?></a>
+                    <button class="easy-qrcode-btn easy-qrcode-btn-print wp-block-button btn button" type="button" onclick="print_easy_qrcode('easy-qrcode-id-<?php echo esc_attr($qr_id); ?>')"><?php echo esc_html__($vars['print-btn-text'], 'easy-qrcode') ?></button>
                 <?php } ?>
                 <?php if (esc_attr($vars['download'] == 'true')) { ?>
-                    <a class="qrcode-download htqr-btn htqr-btn-download" href="#!" data-target=".ht-qrcode-<?php echo esc_attr($qr_id); ?>"><?php echo esc_html__($vars['download-btn-text'], 'easy-qrcode'); ?></a>
+                    <button class="easy-qrcode-btn easy-qrcode-btn-download wp-block-button btn button" type="button" data-target="easy-qrcode-img-<?php echo esc_attr($qr_id); ?>"><?php echo esc_html__($vars['download-btn-text'], 'easy-qrcode'); ?></button>
                 <?php } ?>
             </div>
         </div>
         <script type="text/javascript">
-            jQuery(document).ready(function($) {
-                // 'use strict';
-                new QRCode(document.querySelector('.ht_qrcode-<?php echo esc_js($qr_id); ?>'), {
+            document.addEventListener("DOMContentLoaded", () => {
+                new QRCode(document.getElementById('easy-qrcode-id-<?php echo esc_js($qr_id); ?>'), {
                     text: "<?php echo esc_js($content); ?>",
                     width: <?php echo esc_js($vars['size']); ?>,
                     height: <?php echo esc_js($vars['size']); ?>,
@@ -191,6 +190,25 @@ class EasyQRCodeGenerator
                     timing_V: "<?php echo esc_js($vars['timing-v']); ?>",
                     quietZone: <?php echo esc_js($vars['quietzone']); ?>,
                     quietZoneColor: "<?php echo esc_js($vars['quietzone-color']); ?>",
+                    onRenderingEnd(qrCodeOptions, dataURL) {
+                        if (dataURL) {
+                            var imgEL = document.querySelector('#easy-qrcode-id-<?php echo esc_js($qr_id); ?> img');
+                            if (imgEL) {
+                                imgEL.src = dataURL;
+                            } else {
+                                var imgEL = document.createElement('img');
+                                imgEL.src = dataURL;
+                                document.getElementById('easy-qrcode-id-<?php echo esc_js($qr_id); ?>').appendChild(imgEL);
+                            }
+                            document.querySelector('#easy-qrcode-id-<?php echo esc_js($qr_id); ?> canvas').style.display = 'none'
+                            imgEL.setAttribute('id', 'easy-qrcode-img-<?php echo esc_js($qr_id); ?>');
+                            imgEL.setAttribute('alt', 'Scan Me');
+                        } else {
+                            console.warn('Image used in QR Code is not hosted on same domain, can not download or print.')
+                            var easy_qrcode_btns = document.getElementById('easy-qrcode-btns-<?php echo esc_js($qr_id); ?>')
+                            if (easy_qrcode_btns) easy_qrcode_btns.style.display = 'none';
+                        }
+                    },
                 });
             });
         </script>
@@ -199,8 +217,9 @@ class EasyQRCodeGenerator
     }
 
     function qr_code_print()
-    {
-        echo '<iframe name="qrcode_print_frame" width="0" height="0" frameborder="0" src="about:blank" title="QR Code plugin by Byvex Team"></iframe>';
+    { ?>
+        <iframe name="easy-qrcode-print-frame" width="0" height="0" frameborder="0" src="about:blank" title="QR Code plugin by Byvex Team" style="visibility:hidden;display:none;"></iframe>
+    <?php
     }
 
     function show_plugin_page()
@@ -212,6 +231,7 @@ class EasyQRCodeGenerator
     ?>
         <div class="wrap">
             <h1><strong><?php echo $this->plugin_name; ?></strong></h1>
+            <p>Try Our Live Shortcode Generator: <a href="https://www.byvex.com/easy-qr-code-shortcode-generator/" target="_blank" rel="noopener noreferrer nofollow">https://www.byvex.com/easy-qr-code-shortcode-generator/</a></p>
 
             <div class="nav-tab-wrapper">
                 <a href="<?php echo admin_url('admin.php?page=' . $this->plugin_slug . '-plugin-page'); ?>" class="nav-tab <?php echo $main_tab ? 'nav-tab-active' : ''; ?>"><?php esc_html_e('Overview'); ?></a>
@@ -221,9 +241,11 @@ class EasyQRCodeGenerator
 
             <?php if ($main_tab) { ?>
                 <h2>Overview of QR Code</h2>
+                <img src="<?php echo $this->plugin_dir_url; ?>admin/images/qrcode-overview-1.jpg" alt="" style="width:100%;height:auto;" />
+                <img src="<?php echo $this->plugin_dir_url; ?>admin/images/qrcode-overview-2.jpg" alt="" style="width:100%;height:auto;" />
             <?php } elseif ($shortcode_tab) { ?>
-                <p>After install the plugin you will get use shortcode for wordpress pages.</p>
-                <img src="https://demo.hasthemes.com/doc/qr-code-generator/images/add-page-shortcodes.png" style="max-width:100%;height:auto;" alt="" />
+                <p>After installing plugin you can use shortcode.</p>
+                <img src="<?php echo $this->plugin_dir_url; ?>admin/images/shortcode-in-editor.png" style="max-width:100%;height:auto;" alt="" />
                 <h2>Shortcode Parameters</h2>
                 <p><code>[easy-qrcode title="" sub-title="" html-tag="" alignment="" size="" dot-scale="" qr-level="" logo="" logo-size="" logo-bg-color="" logo-bg-transparent="" qr-bg-image="" qr-bg-opacity="" qr-bg-autoColor="" colordark="" colorlight="" po="" pi="" po-tl="" pi-tl="" po-tr="" pi-tr="" po-bl="" pi-bl="" ai="" ao="" timing="" timing-h="" timing-v="" quietzone="" quietzone-color="" print="true" print-btn-text="Print QR Code" download="true" download-btn-txt="true"][/easy-qrcode]</code></p>
 
@@ -402,6 +424,22 @@ class EasyQRCodeGenerator
 
             <?php } elseif ($contact_tab) { ?>
                 <h2>Byvex Technologies</h2>
+                <p>Website Design and Development Agency. We provide many website related services, some of which are as follow:</p>
+                <ol>
+                    <li>E-Commerce Website</li>
+                    <li>WordPress Blog</li>
+                    <li>Custom WordPress Theme</li>
+                    <li>Static Website and Landing Pages</li>
+                    <li>Core PHP Website</li>
+                    <li>ReactJS or VueJS website</li>
+                    <li>API Development</li>
+                    <li>Design to HTML</li>
+                    <li>Custom Code Modifications, and a lot more.</li>
+                </ol>
+                <p>Website: <a href="https://www.byvex.com/" target="_blank" rel="noopener noreferrer nofollow">www.byvex.com</a>
+                    <br />Email us: <a href="mailto:info@byvex.com">info@byvex.com</a>
+                    <br />WhatsApp: <a href="https://api.whatsapp.com/send?phone=919984495055&text=Hi%20Pawan%2C%20I%20have%20a%20project%20for%20you" target="_blank" rel="noopener noreferrer nofollow">+91 9984495055</a>
+                </p>
             <?php } ?>
 
 
